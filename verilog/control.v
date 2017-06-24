@@ -1,0 +1,712 @@
+module control(instruction, RegWrite, Immed, pcctrl, Jump, InstFormat, MemEN, pcsrc, MemWrite, MemRead, aluops, Signed, flagSelect, ALUOut, RegWriteData, aluor, ImmdLocation, Halt, BranchFlagger,  aSelect, subOP);
+
+input [15:0] instruction;
+output RegWrite, Jump, MemEN, MemWrite, MemRead, Signed, ALUOut, aluor, Halt, BranchFlagger, aSelect, subOP;
+output [1:0] ImmdLocation;
+output [1:0] flagSelect;
+output [1:0] Immed;
+output [1:0] pcsrc;
+output [1:0] pcctrl;
+output [1:0] InstFormat;
+output [2:0] aluops;
+output [1:0] RegWriteData;
+
+reg RegWriteAss, JumpAss, MemENAss, MemWriteAss, MemReadAss, SignedAss, ALUOutAss, aluorAss, HaltAss, BranchFlaggerAss, aSelectAss, subOPAss;
+reg [1:0] ImmdLocationAss;
+reg [1:0] RegWriteDataAss;
+reg [1:0] flagSelectAss;
+reg [1:0] ImmedAss;
+reg [1:0] pcsrcAss;
+reg [1:0] pcctrlAss;
+reg [1:0] InstFormatAss;
+reg [2:0] aluopsAss;
+
+    always @ (*) begin
+        case (instruction [15:11])
+            5'b00001:begin //noop
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b000;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b00;
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b00000:begin //halt
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b11;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b100;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b00;
+                aluorAss = 1'b0;
+                HaltAss = 1'b1;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b01000:begin //addi
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b100;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b00;
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b01001:begin //subi
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b101;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;                
+                ImmdLocationAss = 2'b00;
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b1;
+            end
+            5'b01010:begin //xori
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b110;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b01011:begin //andni
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b111;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10100:begin //roli
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b000;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10101:begin //slli
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b001;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10110:begin //rori
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b010;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10111:begin //srli
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b011;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10000:begin //st
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b1;
+                MemReadAss = 1'b1;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b100;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10001:begin //ld
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b1;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b1;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b100;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10011:begin //stu
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b1;
+                MemReadAss = 1'b1;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b10;
+                aluopsAss = 3'b100;
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b11001:begin //btr
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b10;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss = 3'b000;               
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b11;                           
+                ImmdLocationAss = 2'b00;        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b11011:begin //add, sub, xor, andn
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss[1:0] = instruction[1:0];
+                aluopsAss[2] = instruction[11];            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b1;
+            end
+            5'b11010:begin //rol, sll, ror, srl
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss[1:0] = instruction[1:0];
+                aluopsAss[2] = instruction[11];              
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b11100:begin //seq
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss = 3'b101;              
+                ALUOutAss = 1'b1;
+                flagSelectAss = 2'b01;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b11101:begin //slt
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss = 3'b101;              
+                ALUOutAss = 1'b1;
+                flagSelectAss = 2'b10;  
+                RegWriteDataAss = 2'b00;                             
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end                        
+            5'b11110:begin //sle
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss = 3'b101;                          
+                ALUOutAss = 1'b1;
+                flagSelectAss = 2'b11;  
+                RegWriteDataAss = 2'b00;                              
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end       
+            5'b11111:begin //sco
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b00;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b11;
+                aluopsAss = 3'b100;                            
+                ALUOutAss = 1'b1;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                             
+                ImmdLocationAss = 2'b00;                        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b01100:begin //beqz
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                             
+                ImmdLocationAss = 2'b01;        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b1;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end            
+            5'b01101:begin //bnez
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b01;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;  
+                RegWriteDataAss = 2'b00;                             
+                ImmdLocationAss = 2'b01;                         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b1;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end                  
+            5'b01110:begin //bltz
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b10;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b10;               
+                RegWriteDataAss = 2'b00;                
+                ImmdLocationAss = 2'b01;                                         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b1;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b01111:begin //bgez
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b11;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b01;                                         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b1;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b11000:begin //lbi
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b10;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b10;
+                ImmdLocationAss = 2'b01;        
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b10010:begin //slbi
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b11;
+                JumpAss = 1'b0;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b0;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b00;
+                InstFormatAss = 2'b10;
+                aluopsAss = 3'b001;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b01;
+                aluorAss = 1'b1;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end
+            5'b00100:begin //j
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b1;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b00;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b10;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b10;
+                ImmdLocationAss = 2'b10;         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end                        
+            5'b00101:begin //jr
+                RegWriteAss = 1'b0;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b1;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b10;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b01;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b00;
+                ImmdLocationAss = 2'b01;         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b1;
+                subOPAss = 1'b0;
+            end
+            5'b00110:begin //jal
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b1;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b11;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b01;
+                ImmdLocationAss = 2'b10;         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b0;
+                subOPAss = 1'b0;
+            end            
+            5'b00111:begin //jalr
+                RegWriteAss = 1'b1;
+                ImmedAss = 2'b01;
+                JumpAss = 1'b1;
+                MemENAss = 1'b0;
+                MemWriteAss = 1'b0;
+                MemReadAss = 1'b0;
+                SignedAss = 1'b1;
+                pcsrcAss = 2'b10;
+                pcctrlAss = 2'b01;
+                InstFormatAss = 2'b00;
+                aluopsAss = 3'b000;                            
+                ALUOutAss = 1'b0;
+                flagSelectAss = 2'b00;
+                RegWriteDataAss = 2'b01;
+                ImmdLocationAss = 2'b01;         
+                aluorAss = 1'b0;
+                HaltAss = 1'b0;
+                BranchFlaggerAss = 1'b0;
+                aSelectAss = 1'b1;
+                subOPAss = 1'b0;
+            end
+        endcase
+    end
+
+    assign RegWrite = RegWriteAss;
+    assign Jump = JumpAss;
+    assign MemEN = MemENAss;
+    assign MemWrite = MemWriteAss;
+    assign MemRead = MemReadAss;
+    assign Signed = SignedAss;
+    assign ALUOut = ALUOutAss; 
+    assign aluor = aluorAss;
+    assign Halt = HaltAss; 
+    assign ImmdLocation = ImmdLocationAss;
+    assign flagSelect = flagSelectAss;
+    assign Immed = ImmedAss;
+    assign pcsrc = pcsrcAss;
+    assign pcctrl = pcctrlAss;
+    assign InstFormat = InstFormatAss;
+    assign aluops = aluopsAss;
+    assign RegWriteData = RegWriteDataAss;
+    assign BranchFlagger = BranchFlaggerAss;
+    assign aSelect = aSelectAss;
+    assign subOP = subOPAss;
+
+endmodule
